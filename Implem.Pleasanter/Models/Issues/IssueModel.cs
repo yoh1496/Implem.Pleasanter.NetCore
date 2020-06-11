@@ -808,7 +808,6 @@ namespace Implem.Pleasanter.Models
                     case "Title": data.Title = Title.Value; break;
                     case "Body": data.Body = Body; break;
                     case "StartTime": data.StartTime = StartTime.ToLocal(context: context); break;
-                    case "CompletionTime": data.CompletionTime = CompletionTime.Value.ToLocal(context: context); break;
                     case "WorkValue": data.WorkValue = WorkValue.Value; break;
                     case "ProgressRate": data.ProgressRate = ProgressRate.Value; break;
                     case "RemainingWorkValue": data.RemainingWorkValue = RemainingWorkValue; break;
@@ -819,6 +818,7 @@ namespace Implem.Pleasanter.Models
                     case "Creator": data.Creator = Creator.Id; break;
                     case "Updator": data.Updator = Updator.Id; break;
                     case "CreatedTime": data.CreatedTime = CreatedTime.Value.ToLocal(context: context); break;
+                    case "CompletionTime": data.CompletionTime = CompletionTime.DisplayValue.ToLocal(context: context); break;
                     case "Comments": data.Comments = Comments.ToLocal(context: context).ToJson(); break;
                     default: 
                         data.Value(
@@ -849,53 +849,55 @@ namespace Implem.Pleasanter.Models
                 .SiteMenu.Breadcrumb(context: context, siteId: SiteId)
                 .FullText(context, fullText);
             SiteId.FullText(context, fullText);
-            ss.EditorColumns.ForEach(columnName =>
-            {
-                switch (columnName)
+            ss.GetEditorColumnNames(
+                context: context,
+                columnOnly: true).ForEach(columnName =>
                 {
-                    case "IssueId":
-                        IssueId.FullText(context, fullText);
-                        break;
-                    case "Title":
-                        Title.FullText(context, fullText);
-                        break;
-                    case "Body":
-                        Body.FullText(context, fullText);
-                        break;
-                    case "StartTime":
-                        StartTime.FullText(context, fullText);
-                        break;
-                    case "CompletionTime":
-                        CompletionTime.FullText(context, fullText);
-                        break;
-                    case "WorkValue":
-                        WorkValue.FullText(context, fullText);
-                        break;
-                    case "ProgressRate":
-                        ProgressRate.FullText(context, fullText);
-                        break;
-                    case "Status":
-                        Status.FullText(context, ss.GetColumn(context: context, columnName: "Status"), fullText);
-                        break;
-                    case "Manager":
-                        Manager.FullText(context, fullText);
-                        break;
-                    case "Owner":
-                        Owner.FullText(context, fullText);
-                        break;
-                    case "Comments":
-                        Comments.FullText(context, fullText);
-                        break;
-                    default:
-                        FullText(
-                            context: context,
-                            column: ss.GetColumn(
+                    switch (columnName)
+                    {
+                        case "IssueId":
+                            IssueId.FullText(context, fullText);
+                            break;
+                        case "Title":
+                            Title.FullText(context, fullText);
+                            break;
+                        case "Body":
+                            Body.FullText(context, fullText);
+                            break;
+                        case "StartTime":
+                            StartTime.FullText(context, fullText);
+                            break;
+                        case "CompletionTime":
+                            CompletionTime.FullText(context, fullText);
+                            break;
+                        case "WorkValue":
+                            WorkValue.FullText(context, fullText);
+                            break;
+                        case "ProgressRate":
+                            ProgressRate.FullText(context, fullText);
+                            break;
+                        case "Status":
+                            Status.FullText(context, ss.GetColumn(context: context, columnName: "Status"), fullText);
+                            break;
+                        case "Manager":
+                            Manager.FullText(context, fullText);
+                            break;
+                        case "Owner":
+                            Owner.FullText(context, fullText);
+                            break;
+                        case "Comments":
+                            Comments.FullText(context, fullText);
+                            break;
+                        default:
+                            FullText(
                                 context: context,
-                                columnName: columnName),
-                            fullText: fullText);
-                        break;
-                }
-            });
+                                column: ss.GetColumn(
+                                    context: context,
+                                    columnName: columnName),
+                                fullText: fullText);
+                            break;
+                    }
+                });
             Creator.FullText(context, fullText);
             Updator.FullText(context, fullText);
             CreatedTime.FullText(context, fullText);

@@ -1,5 +1,5 @@
 ﻿{
-    "Provider": "SAML",
+    "Provider": null,
     "ServiceId": null,
     "ExtensionUrl": null,
     "RejectUnregisteredUser": false,
@@ -38,8 +38,6 @@
     "SamlParameters": {
         "Attributes": {
             "Name": "Name",
-            "FirstName": "FirstName",
-            "LastName": "LastName",
             "UserCode": "UserCode",
             "Birthday": "Birthday",
             "Gender": "Gender",
