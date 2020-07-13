@@ -708,6 +708,10 @@ namespace Implem.Pleasanter.Models
                 reference: reference,
                 referenceId: id);
             var data = context.RequestDataString.Deserialize<OutgoingMailApiModel>();
+            if (data == null)
+            {
+                return ApiResults.Get(ApiResponses.BadRequest(context: context));
+            }
             if (!siteModel.WithinApiLimits())
             {
                 return ApiResults.Get(ApiResponses.OverLimitApi(
