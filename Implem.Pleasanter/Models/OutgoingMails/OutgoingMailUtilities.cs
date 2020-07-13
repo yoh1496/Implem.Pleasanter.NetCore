@@ -1,17 +1,12 @@
 ﻿using Implem.DefinitionAccessor;
-using Implem.Libraries.Classes;
-using Implem.Libraries.DataSources.Interfaces;
 using Implem.Libraries.DataSources.SqlServer;
 using Implem.Libraries.Utilities;
 using Implem.Pleasanter.Libraries.DataSources;
 using Implem.Pleasanter.Libraries.DataTypes;
-using Implem.Pleasanter.Libraries.Extensions;
 using Implem.Pleasanter.Libraries.General;
 using Implem.Pleasanter.Libraries.Html;
 using Implem.Pleasanter.Libraries.HtmlParts;
-using Implem.Pleasanter.Libraries.Models;
 using Implem.Pleasanter.Libraries.Requests;
-using Implem.Pleasanter.Libraries.Resources;
 using Implem.Pleasanter.Libraries.Responses;
 using Implem.Pleasanter.Libraries.Security;
 using Implem.Pleasanter.Libraries.Server;
@@ -691,6 +686,72 @@ namespace Implem.Pleasanter.Models
                             outgoingMailModel: outgoingMailModel))
                     .Message(Messages.MailTransmissionCompletion(context: context))
                     .ToJson();
+        }
+
+        /// <summary>
+        /// Fixed:
+        /// </summary>
+        public static System.Web.Mvc.ContentResult SendByApi(Context context, string reference, long id)
+        {
+            var itemModel = new ItemModel(
+                context: context,
+                referenceId: id);
+            var siteModel = new SiteModel(
+                context: context,
+                siteId: itemModel.SiteId);
+            var ss = SiteSettingsUtilities.Get(
+                context: context,
+                siteModel: siteModel,
+                referenceId: itemModel.ReferenceId);
+            var outgoingMailModel = new OutgoingMailModel(
+                context: context,
+                reference: reference,
+                referenceId: id);
+            var data = context.RequestDataString.Deserialize<OutgoingMailApiModel>();
+            if (!siteModel.WithinApiLimits())
+            {
+                return ApiResults.Get(ApiResponses.OverLimitApi(
+                    context: context,
+                    siteId: itemModel.SiteId,
+                    limitPerSite: Parameters.Api.LimitPerSite));
+            }
+            if (data.From != null) outgoingMailModel.From = new System.Net.Mail.MailAddress(data.From);
+            if (data.To != null) outgoingMailModel.To = data.To;
+            if (data.Cc != null) outgoingMailModel.Cc = data.Cc;
+            if (data.Bcc != null) outgoingMailModel.Bcc = data.Bcc;
+            if (data.Title != null) outgoingMailModel.Title = new Title(data.Title);
+            if (data.Body != null) outgoingMailModel.Body = data.Body;
+            var invalid = OutgoingMailValidators.OnSending(
+                context: context,
+                ss: ss,
+                outgoingMailModel: outgoingMailModel);
+            switch (invalid.Type)
+            {
+                case Error.Types.None: break;
+                default:
+                    return ApiResults.Error(
+                        context: context,
+                        errorData: invalid);
+            }
+            var errorData = outgoingMailModel.Send(
+                context: context,
+                ss: ss);
+            switch (errorData.Type)
+            {
+                case Error.Types.None:
+                    SiteUtilities.UpdateApiCount(context: context, ss: ss);
+                    return ApiResults.Success(
+                        id: id,
+                        limitPerDate: Parameters.Api.LimitPerSite,
+                        limitRemaining: Parameters.Api.LimitPerSite - ss.ApiCount,
+                        message: Displays.MailTransmissionCompletion(
+                            context: context,
+                            data: outgoingMailModel.Title.DisplayValue));
+                default:
+                    return ApiResults.Error(
+                        context: context,
+                        errorData: errorData);
+            }
         }
     }
 }
