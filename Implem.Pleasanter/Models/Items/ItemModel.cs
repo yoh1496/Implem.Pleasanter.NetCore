@@ -1,4 +1,5 @@
 ﻿using Implem.DefinitionAccessor;
+using Implem.Libraries.Classes;
 using Implem.Libraries.DataSources.SqlServer;
 using Implem.Libraries.Utilities;
 using Implem.Pleasanter.Libraries.DataSources;
@@ -16,6 +17,7 @@ using Implem.Pleasanter.Libraries.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 namespace Implem.Pleasanter.Models
 {
@@ -142,7 +144,7 @@ namespace Implem.Pleasanter.Models
         public System.Web.Mvc.ContentResult ExportByApi(Context context)
         {
             SetSite(context: context);
-            if (!Site.WithinApiLimits())
+            if (!WithinApiLimits(context: context, siteModel: Site))
             {
                 return ApiResults.Get(ApiResponses.OverLimitApi(
                     context: context,

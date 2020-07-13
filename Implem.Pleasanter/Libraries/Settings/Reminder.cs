@@ -635,7 +635,7 @@ namespace Implem.Pleasanter.Libraries.Settings
                 case "Results":
                     var resultModel = new ResultModel(
                         context: context, ss: ss, dataRow: dataRow);
-                    ss.IncludedColumns(Line).ForEach(column =>
+                    ss.IncludedColumns(line).ForEach(column =>
                     {
                         switch (column.ColumnName)
                         {
