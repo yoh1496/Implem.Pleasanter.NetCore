@@ -927,17 +927,17 @@ namespace Implem.Pleasanter.Models
                                         css: section.Key.AllowExpand == true && section.Key.Expand != true
                                             ? "section-fields hidden"
                                             : "section-fields",
-                                        action: () => hb.Fields(
-                                            context: context,
-                                            ss: ss,
-                                            id: id,
-                                            columnNames: section.Value,
-                                            dataSet: dataSet,
-                                            links: links,
-                                            wikiModel: wikiModel,
-                                            preview: preview,
-                                            editInDialog: editInDialog,
-                                            tabIndex: tabIndex)));
+                                    action: () => hb.Fields(
+                                        context: context,
+                                        ss: ss,
+                                        id: id,
+                                        columnNames: section.Value,
+                                        dataSet: dataSet,
+                                        links: links,
+                                        wikiModel: wikiModel,
+                                        preview: preview,
+                                        editInDialog: editInDialog,
+                                        tabIndex: tabIndex)));
                     }
                 });
             return hb;

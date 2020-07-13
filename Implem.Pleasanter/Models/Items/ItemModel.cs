@@ -144,7 +144,7 @@ namespace Implem.Pleasanter.Models
         public System.Web.Mvc.ContentResult ExportByApi(Context context)
         {
             SetSite(context: context);
-            if (!WithinApiLimits(context: context, siteModel: Site))
+            if (!Site.WithinApiLimits())
             {
                 return ApiResults.Get(ApiResponses.OverLimitApi(
                     context: context,
