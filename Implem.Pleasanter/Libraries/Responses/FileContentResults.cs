@@ -140,15 +140,27 @@ namespace Implem.Pleasanter.Libraries.Responses
             switch (Parameters.BinaryStorage.Provider)
             {
                 case "Local":
-                    return Files.Bytes(
-                        Path.Combine(Directories.BinaryStorage(),
-                        dataRow.String("BinaryType"),
-                        dataRow.String("Guid")));
+                    return BytesforLocal(
+                        dataRow: dataRow,
+                        thumbnail: thumbnail)
+                            ?? BytesforLocal(
+                            dataRow: dataRow,
+                            thumbnail: false);
                 default:
                     return thumbnail
                         ? dataRow.Bytes("Thumbnail")
                         : dataRow.Bytes("Bin");
             }
+        }
+        private static byte[] BytesforLocal(DataRow dataRow, bool thumbnail = false)
+        {
+            return Files.Bytes(Path.Combine(
+                        Directories.BinaryStorage(),
+                        dataRow.String("BinaryType"),
+                        dataRow.String("Guid")
+                            + (thumbnail
+                            ? "_thumbnail"
+                            : string.Empty)));
         }
         public static FileContentResult DownloadTemp(string guid)
         {
