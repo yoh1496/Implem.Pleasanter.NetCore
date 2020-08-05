@@ -776,6 +776,7 @@ namespace Implem.DefinitionAccessor
                     case "Rds_Columns": Code.Rds_Columns = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns, definitionRow, CodeXls); break;
                     case "Rds_Columns_SqlClasses": Code.Rds_Columns_SqlClasses = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns_SqlClasses, definitionRow, CodeXls); break;
                     case "Rds_Columns_ConstSqlWhereLike": Code.Rds_Columns_ConstSqlWhereLike = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns_ConstSqlWhereLike, definitionRow, CodeXls); break;
+                    case "Rds_Columns_ConstSqlWhereLike_Numeric": Code.Rds_Columns_ConstSqlWhereLike_Numeric = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns_ConstSqlWhereLike_Numeric, definitionRow, CodeXls); break;
                     case "Rds_Columns_SqlColumnCases": Code.Rds_Columns_SqlColumnCases = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns_SqlColumnCases, definitionRow, CodeXls); break;
                     case "Rds_Columns_SqlColumn": Code.Rds_Columns_SqlColumn = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns_SqlColumn, definitionRow, CodeXls); break;
                     case "Rds_Columns_SqlColumn_SelectColumns": Code.Rds_Columns_SqlColumn_SelectColumns = definitionRow[1].ToString().NoSpace(definitionRow["NoSpace"].ToBool()); SetCodeTable(CodeTable.Rds_Columns_SqlColumn_SelectColumns, definitionRow, CodeXls); break;
@@ -1587,6 +1588,8 @@ namespace Implem.DefinitionAccessor
                     case "Users_MailAddresses": Column.Users_MailAddresses = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_MailAddresses, definitionRow, ColumnXls); break;
                     case "Users_DemoMailAddress": Column.Users_DemoMailAddress = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_DemoMailAddress, definitionRow, ColumnXls); break;
                     case "Users_SessionGuid": Column.Users_SessionGuid = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_SessionGuid, definitionRow, ColumnXls); break;
+                    case "Users_SecondaryAuthenticationCode": Column.Users_SecondaryAuthenticationCode = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_SecondaryAuthenticationCode, definitionRow, ColumnXls); break;
+                    case "Users_SecondaryAuthenticationCodeExpirationTime": Column.Users_SecondaryAuthenticationCodeExpirationTime = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_SecondaryAuthenticationCodeExpirationTime, definitionRow, ColumnXls); break;
                     case "Users_LdapSearchRoot": Column.Users_LdapSearchRoot = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_LdapSearchRoot, definitionRow, ColumnXls); break;
                     case "Users_SynchronizedTime": Column.Users_SynchronizedTime = definitionRow[1].ToString(); SetColumnTable(ColumnTable.Users_SynchronizedTime, definitionRow, ColumnXls); break;
                     case "LoginKeys_LoginId": Column.LoginKeys_LoginId = definitionRow[1].ToString(); SetColumnTable(ColumnTable.LoginKeys_LoginId, definitionRow, ColumnXls); break;
@@ -2447,6 +2450,16 @@ namespace Implem.DefinitionAccessor
                                 data.ToDecimal();
                             newColumnDefinition.SavedStep = newColumnDefinition.Step;
                             break;
+                        case "DefaultMinValue":
+                            newColumnDefinition.DefaultMinValue = customDefinitionRow.Get("DefaultMinValue")?.ToDecimal() ??
+                                data.ToDecimal();
+                            newColumnDefinition.SavedDefaultMinValue = newColumnDefinition.DefaultMinValue;
+                            break;
+                        case "DefaultMaxValue":
+                            newColumnDefinition.DefaultMaxValue = customDefinitionRow.Get("DefaultMaxValue")?.ToDecimal() ??
+                                data.ToDecimal();
+                            newColumnDefinition.SavedDefaultMaxValue = newColumnDefinition.DefaultMaxValue;
+                            break;
                         case "StringFormat":
                             newColumnDefinition.StringFormat = customDefinitionRow.Get("StringFormat")?.ToString() ??
                                 data.ToString();
@@ -2629,6 +2642,8 @@ namespace Implem.DefinitionAccessor
             if (definitionRow.ContainsKey("Min")) { definition.Min = definitionRow["Min"].ToDecimal(); definition.SavedMin = definition.Min; }
             if (definitionRow.ContainsKey("Max")) { definition.Max = definitionRow["Max"].ToDecimal(); definition.SavedMax = definition.Max; }
             if (definitionRow.ContainsKey("Step")) { definition.Step = definitionRow["Step"].ToDecimal(); definition.SavedStep = definition.Step; }
+            if (definitionRow.ContainsKey("DefaultMinValue")) { definition.DefaultMinValue = definitionRow["DefaultMinValue"].ToDecimal(); definition.SavedDefaultMinValue = definition.DefaultMinValue; }
+            if (definitionRow.ContainsKey("DefaultMaxValue")) { definition.DefaultMaxValue = definitionRow["DefaultMaxValue"].ToDecimal(); definition.SavedDefaultMaxValue = definition.DefaultMaxValue; }
             if (definitionRow.ContainsKey("StringFormat")) { definition.StringFormat = definitionRow["StringFormat"].ToString(); definition.SavedStringFormat = definition.StringFormat; }
             if (definitionRow.ContainsKey("Unit")) { definition.Unit = definitionRow["Unit"].ToString(); definition.SavedUnit = definition.Unit; }
             if (definitionRow.ContainsKey("NumFilterMin")) { definition.NumFilterMin = definitionRow["NumFilterMin"].ToDecimal(); definition.SavedNumFilterMin = definition.NumFilterMin; }
@@ -5281,6 +5296,9 @@ namespace Implem.DefinitionAccessor
         public static SqlColumn2nd Sql;
         public static SqlTable SqlTable;
 
+        /// <summary>
+        /// Fixed:
+        /// </summary>
         public static void SetSqlDefinition()
         {
             ConstructSqlDefinitions();
@@ -5314,6 +5332,9 @@ namespace Implem.DefinitionAccessor
             if (definitionRow.ContainsKey("Body")) { definition.Body = definitionRow["Body"].ToString(); definition.SavedBody = definition.Body; }
         }
 
+        /// <summary>
+        /// Fixed:
+        /// </summary>
         static void SetSqlTable(SqlDefinition definition, ISqlDefinitionFile definitionFile)
         {
             if (definition == null) return;
@@ -5323,6 +5344,9 @@ namespace Implem.DefinitionAccessor
             definition.SavedBody = definition.Body;
         }
 
+        /// <summary>
+        /// Fixed:
+        /// </summary>
         private static void ConstructSqlDefinitions()
         {
             SqllDefinitionFiles = Initializer.DefinitionSqls(dbms: Parameters.Rds.Dbms);
@@ -6246,6 +6270,8 @@ namespace Implem.DefinitionAccessor
                         case "Min": columnDefinition.Min = optionValue.ToDecimal(); break;
                         case "Max": columnDefinition.Max = optionValue.ToDecimal(); break;
                         case "Step": columnDefinition.Step = optionValue.ToDecimal(); break;
+                        case "DefaultMinValue": columnDefinition.DefaultMinValue = optionValue.ToDecimal(); break;
+                        case "DefaultMaxValue": columnDefinition.DefaultMaxValue = optionValue.ToDecimal(); break;
                         case "StringFormat": columnDefinition.StringFormat = optionValue.ToString(); break;
                         case "Unit": columnDefinition.Unit = optionValue.ToString(); break;
                         case "NumFilterMin": columnDefinition.NumFilterMin = optionValue.ToDecimal(); break;
@@ -6656,6 +6682,9 @@ namespace Implem.DefinitionAccessor
             });
         }
 
+        /// <summary>
+        /// Fixed:
+        /// </summary>
         private static Dictionary<string, string> ColumnDefinition(
             string tableName,
             string type,
@@ -7590,6 +7619,7 @@ namespace Implem.DefinitionAccessor
         public string Rds_Columns;
         public string Rds_Columns_SqlClasses;
         public string Rds_Columns_ConstSqlWhereLike;
+        public string Rds_Columns_ConstSqlWhereLike_Numeric;
         public string Rds_Columns_SqlColumnCases;
         public string Rds_Columns_SqlColumn;
         public string Rds_Columns_SqlColumn_SelectColumns;
@@ -8226,6 +8256,7 @@ namespace Implem.DefinitionAccessor
         public CodeDefinition Rds_Columns = new CodeDefinition();
         public CodeDefinition Rds_Columns_SqlClasses = new CodeDefinition();
         public CodeDefinition Rds_Columns_ConstSqlWhereLike = new CodeDefinition();
+        public CodeDefinition Rds_Columns_ConstSqlWhereLike_Numeric = new CodeDefinition();
         public CodeDefinition Rds_Columns_SqlColumnCases = new CodeDefinition();
         public CodeDefinition Rds_Columns_SqlColumn = new CodeDefinition();
         public CodeDefinition Rds_Columns_SqlColumn_SelectColumns = new CodeDefinition();
@@ -8377,7 +8408,7 @@ namespace Implem.DefinitionAccessor
         public string TypeCs; public string SavedTypeCs;
         public string RecordingData; public string SavedRecordingData;
         public int MaxLength; public int SavedMaxLength;
-        public string Size; public string SavedSize;    
+        public string Size; public string SavedSize;
         public int Pk; public int SavedPk;
         public string PkOrderBy; public string SavedPkOrderBy;
         public int PkHistory; public int SavedPkHistory;
@@ -8452,6 +8483,8 @@ namespace Implem.DefinitionAccessor
         public decimal Min; public decimal SavedMin;
         public decimal Max; public decimal SavedMax;
         public decimal Step; public decimal SavedStep;
+        public decimal DefaultMinValue; public decimal SavedDefaultMinValue;
+        public decimal DefaultMaxValue; public decimal SavedDefaultMaxValue;
         public string StringFormat; public string SavedStringFormat;
         public string Unit; public string SavedUnit;
         public decimal NumFilterMin; public decimal SavedNumFilterMin;
@@ -8576,6 +8609,8 @@ namespace Implem.DefinitionAccessor
             if (propertyCollection.ContainsKey("Min")) Min = propertyCollection["Min"].ToDecimal(); else Min = 0;
             if (propertyCollection.ContainsKey("Max")) Max = propertyCollection["Max"].ToDecimal(); else Max = 0;
             if (propertyCollection.ContainsKey("Step")) Step = propertyCollection["Step"].ToDecimal(); else Step = 0;
+            if (propertyCollection.ContainsKey("DefaultMinValue")) DefaultMinValue = propertyCollection["DefaultMinValue"].ToDecimal(); else DefaultMinValue = 0;
+            if (propertyCollection.ContainsKey("DefaultMaxValue")) DefaultMaxValue = propertyCollection["DefaultMaxValue"].ToDecimal(); else DefaultMaxValue = 0;
             if (propertyCollection.ContainsKey("StringFormat")) StringFormat = propertyCollection["StringFormat"].ToString(); else StringFormat = string.Empty;
             if (propertyCollection.ContainsKey("Unit")) Unit = propertyCollection["Unit"].ToString(); else Unit = string.Empty;
             if (propertyCollection.ContainsKey("NumFilterMin")) NumFilterMin = propertyCollection["NumFilterMin"].ToDecimal(); else NumFilterMin = 0;
@@ -8700,6 +8735,8 @@ namespace Implem.DefinitionAccessor
                     case "Min": return Min;
                     case "Max": return Max;
                     case "Step": return Step;
+                    case "DefaultMinValue": return DefaultMinValue;
+                    case "DefaultMaxValue": return DefaultMaxValue;
                     case "StringFormat": return StringFormat;
                     case "Unit": return Unit;
                     case "NumFilterMin": return NumFilterMin;
@@ -8824,6 +8861,8 @@ namespace Implem.DefinitionAccessor
             Min = SavedMin;
             Max = SavedMax;
             Step = SavedStep;
+            DefaultMinValue = SavedDefaultMinValue;
+            DefaultMaxValue = SavedDefaultMaxValue;
             StringFormat = SavedStringFormat;
             Unit = SavedUnit;
             NumFilterMin = SavedNumFilterMin;
@@ -9008,6 +9047,8 @@ namespace Implem.DefinitionAccessor
         public string Users_MailAddresses;
         public string Users_DemoMailAddress;
         public string Users_SessionGuid;
+        public string Users_SecondaryAuthenticationCode;
+        public string Users_SecondaryAuthenticationCodeExpirationTime;
         public string Users_LdapSearchRoot;
         public string Users_SynchronizedTime;
         public string LoginKeys_LoginId;
@@ -9502,6 +9543,8 @@ namespace Implem.DefinitionAccessor
         public ColumnDefinition Users_MailAddresses = new ColumnDefinition();
         public ColumnDefinition Users_DemoMailAddress = new ColumnDefinition();
         public ColumnDefinition Users_SessionGuid = new ColumnDefinition();
+        public ColumnDefinition Users_SecondaryAuthenticationCode = new ColumnDefinition();
+        public ColumnDefinition Users_SecondaryAuthenticationCodeExpirationTime = new ColumnDefinition();
         public ColumnDefinition Users_LdapSearchRoot = new ColumnDefinition();
         public ColumnDefinition Users_SynchronizedTime = new ColumnDefinition();
         public ColumnDefinition LoginKeys_LoginId = new ColumnDefinition();
@@ -13357,6 +13400,9 @@ namespace Implem.DefinitionAccessor
         }
     }
 
+    /// <summary>
+    /// Fixed:
+    /// </summary>
     public class SqlColumn2nd
     {
         public string BeginTransaction;
@@ -13406,6 +13452,9 @@ namespace Implem.DefinitionAccessor
         public string CreateLoginRole;
     }
 
+    /// <summary>
+    /// Fixed:
+    /// </summary>
     public class SqlTable
     {
         public SqlDefinition BeginTransaction = new SqlDefinition();
@@ -13451,6 +13500,9 @@ namespace Implem.DefinitionAccessor
         public SqlDefinition CreateFullText = new SqlDefinition();
     }
 
+    /// <summary>
+    /// Fixed:
+    /// </summary>
     public interface ISqlDefinitionFile
     {
         string Id { get; }
@@ -13460,6 +13512,9 @@ namespace Implem.DefinitionAccessor
         void Read();
     }
 
+    /// <summary>
+    /// Fixed:
+    /// </summary>
     public interface ISqlDefinitionFiles : IReadOnlyCollection<ISqlDefinitionFile>
     {
         string FullPath { get; set; }
@@ -13467,6 +13522,9 @@ namespace Implem.DefinitionAccessor
         void ReadAppend(string path, string searchPattern);
     }
 
+    /// <summary>
+    /// Fixed:
+    /// </summary>
     public class SqlDefinitionFileText : ISqlDefinitionFile
     {
         public string Id { get; }
@@ -13505,6 +13563,9 @@ namespace Implem.DefinitionAccessor
         }
     }
 
+    /// <summary>
+    /// Fixed:
+    /// </summary>
     public class SqlDefinitionFiles : ISqlDefinitionFiles
     {
         private static readonly string SearchPattern = "*.sql";

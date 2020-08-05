@@ -50,7 +50,7 @@ namespace Implem.Pleasanter.Libraries.HtmlParts
             bool disableSection = false,
             bool _using = true)
         {
-            if (column.UserColumn && value == User.UserTypes.Anonymous.ToInt().ToString())
+            if (column.Type == Column.Types.User && value == User.UserTypes.Anonymous.ToInt().ToString())
             {
                 value = string.Empty;
             }
@@ -69,38 +69,47 @@ namespace Implem.Pleasanter.Libraries.HtmlParts
                         ss: ss,
                         column: column)
                     : value;
-                return hb.SwitchField(
-                    context: context,
-                    ss: ss,
-                    column: column,
-                    columnPermissionType: context.Publish || column.EditorReadOnly == true
-                        ? Permissions.ColumnPermissionTypes.Read
-                        : columnPermissionType,
-                    controlId: !preview
-                        ? $"{column.Id}{idSuffix}"
-                        : null,
-                    columnName: $"{column.ColumnName}{idSuffix}",
-                    fieldCss: FieldCss(column, fieldCss)
-                        + (column.TextAlign == SiteSettings.TextAlignTypes.Right
-                            ? " right-align"
-                            : string.Empty),
-                    labelCss: labelCss,
-                    controlContainerCss: controlContainerCss,
-                    controlCss: Strings.CoalesceEmpty(controlCss, column.ControlCss)
-                        + (column.TextAlign == SiteSettings.TextAlignTypes.Right
-                            ? " right-align"
-                            : string.Empty),
-                    controlType: ControlType(column),
-                    value: value,
-                    optionCollection: EditChoices(
+                return hb
+                    .Raw(HtmlHtmls.ExtendedHtmls(
+                        context: context,
+                        id: "ColumnTop",
+                        columnName: column.ColumnName))
+                    .SwitchField(
                         context: context,
                         ss: ss,
                         column: column,
-                        value: value),
-                    mobile: context.Mobile,
-                    controlOnly: controlOnly,
-                    alwaysSend: alwaysSend,
-                    preview: preview);
+                        columnPermissionType: context.Publish || column.EditorReadOnly == true
+                            ? Permissions.ColumnPermissionTypes.Read
+                            : columnPermissionType,
+                        controlId: !preview
+                            ? $"{column.Id}{idSuffix}"
+                            : null,
+                        columnName: $"{column.ColumnName}{idSuffix}",
+                        fieldCss: FieldCss(column, fieldCss)
+                            + (column.TextAlign == SiteSettings.TextAlignTypes.Right
+                                ? " right-align"
+                                : string.Empty),
+                        labelCss: labelCss,
+                        controlContainerCss: controlContainerCss,
+                        controlCss: Strings.CoalesceEmpty(controlCss, column.ControlCss)
+                            + (column.TextAlign == SiteSettings.TextAlignTypes.Right
+                                ? " right-align"
+                                : string.Empty),
+                        controlType: ControlType(column),
+                        value: value,
+                        optionCollection: EditChoices(
+                            context: context,
+                            ss: ss,
+                            column: column,
+                            value: value),
+                        mobile: context.Mobile,
+                        controlOnly: controlOnly,
+                        alwaysSend: alwaysSend,
+                        preview: preview)
+                    .Raw(HtmlHtmls.ExtendedHtmls(
+                        context: context,
+                        id: "ColumnBottom",
+                        columnName: column.ColumnName));
             }
             else
             {
@@ -484,8 +493,8 @@ namespace Implem.Pleasanter.Libraries.HtmlParts
                                 labelRequired: required,
                                 controlOnly: controlOnly,
                                 value: value.ToDecimal(),
-                                min: column.Min.ToDecimal(),
-                                max: column.Max.ToDecimal(),
+                                min: column.MinNumber(),
+                                max: column.MaxNumber(),
                                 step: column.Step.ToDecimal(),
                                 width: 50,
                                 unit: column.Unit,

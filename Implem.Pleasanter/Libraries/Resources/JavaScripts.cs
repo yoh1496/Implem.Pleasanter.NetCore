@@ -26,7 +26,13 @@ namespace Implem.Pleasanter.Libraries.Resources
             return new ContentResult
             {
                 ContentType = "text/javascript",
-                Content = HtmlScripts.ExtendedScripts(context: context)
+                Content = HtmlScripts.ExtendedScripts(
+                    deptId: context.DeptId,
+                    userId: context.UserId,
+                    siteId: context.QueryStrings.Long("site-id"),
+                    id: context.QueryStrings.Long("id"),
+                    controller: context.QueryStrings.Data("controller"),
+                    action: context.QueryStrings.Data("action"))
             };
         }
     }
