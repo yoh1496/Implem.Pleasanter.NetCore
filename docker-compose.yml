@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  pleasanter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pleasanter-all
+    ports: 
+      - "5001:5000"
+    volumes:
+      - ./Implem.Pleasanter/App_Data/:/app/App_Data/
+
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: SetSaPWD
+      POSTGRES_HOST_AUTH_METHOD: md5
