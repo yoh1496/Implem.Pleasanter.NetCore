@@ -37,17 +37,17 @@ COPY ["Implem.DisplayAccessor/", "Implem.DisplayAccessor/"]
 COPY ["Implem.Libraries/", "Implem.Libraries/"]
 COPY ["Implem.ParameterAccessor/", "Implem.ParameterAccessor/"]
 
-RUN dotnet build "Implem.Pleasanter.NetCore.sln" -c Release -o /app/build
-
 # PreBuild
 RUN cp -rf Implem.Pleasanter/App_Data/* Implem.Pleasanter.NetCore/App_Data && \
     cp -rf Implem.Pleasanter/Views/* Implem.Pleasanter.NetCore/Views
 
-FROM build AS publish
-RUN dotnet publish "Implem.Pleasanter.NetCore.sln" -c Release -o /app/publish
+RUN dotnet build "Implem.Pleasanter.NetCore.sln" -c Release -o /app/build
 
 # PostBuild
 RUN cp -rf Implem.Pleasanter/wwwroot/* Implem.Pleasanter.NetCore/wwwroot
+
+FROM build AS publish
+RUN dotnet publish "Implem.Pleasanter.NetCore.sln" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
